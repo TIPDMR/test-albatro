@@ -25,7 +25,7 @@ const AuthInputText = forwardRef((
     ...props
   }: IAuthInputTextProps, ref: Ref<HTMLInputElement>,
 ) => {
-  const defaultClassName = 'border-none pl-0 text-sm placeholder:text-sm placeholder:italic placeholder:text-slate-400 text-gray-600 focus:border-none focus:outline-none focus:ring-0';
+  const defaultClassName = 'border-none pl-0 pt-0 pr-0 text-sm placeholder:text-sm placeholder:italic placeholder:text-slate-400 text-gray-600 focus:border-none focus:outline-none focus:ring-0';
 
   return (
     <input

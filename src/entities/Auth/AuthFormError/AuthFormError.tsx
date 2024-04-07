@@ -6,7 +6,7 @@ interface IAuthFormErrorProps {
 
 const AuthFormError: FC<IAuthFormErrorProps> = ({ text }) => {
   return (
-    <span className="absolute left-0 bottom-[-25px] text-red-600 text-sm">{text}</span>
+    <span className="absolute flex items-center pt-1left-0 bottom-[-25px] text-red-600 text-xs">{text}</span>
   );
 };
 

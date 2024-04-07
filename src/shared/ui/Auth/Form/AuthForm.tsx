@@ -12,7 +12,7 @@ const AuthForm: FC<IAuthFormProps> = ({ children, onSubmit }) => {
       onSubmit(e);
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-y-8 tall:gap-y-5 text-gray-400">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-y-8 tall:gap-y-6 text-gray-400">
       {children}
     </form>
   );

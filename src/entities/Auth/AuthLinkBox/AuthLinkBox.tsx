@@ -6,7 +6,7 @@ interface IAuthLinkProps {
 
 const AuthLinkBox: FC<IAuthLinkProps> = ({ children }) => {
   return (
-    <div className="mt-5 text-center bt-5 xs:mt-10">
+    <div className="mt-5 text-center bt-5 xs:mt-10 tall:mt-2">
       {children}
     </div>
   );

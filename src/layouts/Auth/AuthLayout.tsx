@@ -7,7 +7,7 @@ interface IAuthLayoutProps {
 
 const AuthLayout: FC<IAuthLayoutProps> = ({ children }) => {
   return (
-    <main className={cn('flex justify-center items-center h-full mx-auto w-screen sm:w-full  sm:max-w-md min-w-80 box-border')}>{children}</main>
+    <main className={cn('flex justify-center items-center h-full mx-auto w-screen sm:w-full sm:max-w-lg min-w-80 box-border')}>{children}</main>
   );
 };
 

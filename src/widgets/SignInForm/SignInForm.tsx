@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import AuthFieldset from '@entities/Auth/AuthFieldset/AuthFieldset';
 import AuthLabel from '@shared/ui/Auth/Label/AuthLabel';
 import UserIcon from '@shared/images/component/User';
@@ -11,14 +13,17 @@ import AppButton from '@shared/ui/Buttons/AppButton';
 import AuthForm from '@shared/ui/Auth/Form';
 import AuthFormError from '@entities/Auth/AuthFormError/AuthFormError';
 
+
 interface IFormInput {
-  username: string;
+  email: string;
   password: string;
   remember: boolean;
 }
 
 const SignInForm = () => {
+  const router = useRouter();
   const {
+    setError,
     register,
     formState: { errors },
     handleSubmit,
@@ -26,31 +31,53 @@ const SignInForm = () => {
     defaultValues: {
       remember: true,
     },
-    mode: 'onChange',
+    mode: 'all',
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    const res = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      remember: data.remember,
+      redirect: false,
+    });
+    if (res && res.status === 401) {
+      setError('email', {
+        type: 'custom',
+        message: `Пользователь не найден или пароль введен не верно`,
+      });
+    } else if (res && res.ok) {
+      router.push('/');
+    } else {
+      setError('email', {
+        type: 'custom',
+        message: `Ошибка сервера`,
+      });
+    }
   };
 
   return (
     <AuthForm onSubmit={handleSubmit(onSubmit)}>
       <AuthFieldset border>
-        <AuthLabel className="cursor-pointer" htmlFor="username">
+        <AuthLabel className="cursor-pointer" htmlFor="email">
           <UserIcon className="h-5 w-5 text-gray" />
         </AuthLabel>
         <AuthInputText
           type="text"
-          placeholder="username"
-          {...register('username', {
-            required: 'Username is required',
-            minLength: { value: 5, message: 'Username should be at least 5 characters' },
-            maxLength: { value: 30, message: 'Username should not exceed 30 characters' },
+          placeholder="email"
+          {...register('email', {
+            required: 'Email is required',
+            minLength: { value: 5, message: 'Email should be at least 5 characters' },
+            maxLength: { value: 30, message: 'Email should not exceed 30 characters' },
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: 'Entered value does not match email format',
+            },
           })}
-          aria-invalid={errors.username ? 'true' : 'false'}
+          aria-invalid={errors.email ? 'true' : 'false'}
         />
-        {errors?.username && (
-          <span className="absolute left-0 bottom-[-25px] text-red-600 text-sm">{errors.username.message}</span>
+        {errors?.email?.message && (
+          <AuthFormError text={errors.email.message} />
         )}
       </AuthFieldset>
 
@@ -68,7 +95,7 @@ const SignInForm = () => {
           })}
           aria-invalid={errors.password ? 'true' : 'false'}
         />
-        {errors?.password && errors.password.message && (
+        {errors?.password?.message && (
           <AuthFormError text={errors.password.message} />
         )}
       </AuthFieldset>

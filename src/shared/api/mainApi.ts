@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-const MAIN_API_URI = process.env.API_URI || 'http://localhost:8080';
+const MAIN_API_URI = process.env.API_URI || 'https://api.escuelajs.co/api/v1';
 
 interface ApiConfig {
   baseUrl: string;

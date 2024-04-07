@@ -1,4 +1,5 @@
 import React from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import AuthFieldset from '@entities/Auth/AuthFieldset/AuthFieldset';
 import AuthLabel from '@shared/ui/Auth/Label/AuthLabel';
 import UserIcon from '@shared/images/component/User';
@@ -6,7 +7,6 @@ import AuthInputText from '@shared/ui/Auth/InputText/AuthInputText';
 import LockCloseIcon from '@shared/images/component/LockCloseIcon';
 import AppButton from '@shared/ui/Buttons/AppButton';
 import AuthForm from '@shared/ui/Auth/Form';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import AuthFormError from '@entities/Auth/AuthFormError/AuthFormError';
 
 interface IFormInput {
@@ -19,7 +19,6 @@ const SignUpForm = () => {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
   } = useForm<IFormInput>({
     defaultValues: {},
     mode: 'onChange',
@@ -29,7 +28,7 @@ const SignUpForm = () => {
     console.log(data);
   };
   return (
-    <AuthForm>
+     <AuthForm onSubmit={handleSubmit(onSubmit)}>
       <AuthFieldset border>
         <AuthLabel className="cursor-pointer" htmlFor="username">
           <UserIcon className="h-5 w-5 text-gray" />

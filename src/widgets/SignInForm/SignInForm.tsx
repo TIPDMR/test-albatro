@@ -22,7 +22,6 @@ const SignInForm = () => {
     register,
     formState: { errors },
     handleSubmit,
-    reset,
   } = useForm<IFormInput>({
     defaultValues: {
       remember: true,

@@ -9,7 +9,7 @@ interface IAuthFieldsetProps {
 
 const AuthFieldset: FC<IAuthFieldsetProps> = ({ children, className, border }) => {
   return (
-    <fieldset className={cn('flex items-center gap-x-3',border && "border-b border-b-gray pb-3",  className)}>
+    <fieldset className={cn('relative flex items-center gap-x-3',border && "border-b border-b-gray pb-1",  className)}>
       {children}
     </fieldset>
   );

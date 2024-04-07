@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import React, { ChangeEvent, forwardRef, HTMLInputTypeAttribute, Ref } from 'react';
 import { cn } from '@shared/lib/utils/tailwind';
 
 type CustomHTMLInputTypeAttribute = Exclude<HTMLInputTypeAttribute, 'checkbox'>;
@@ -13,7 +13,7 @@ interface IAuthInputTextProps {
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const AuthInputText: FC<IAuthInputTextProps> = (
+const AuthInputText = forwardRef((
   {
     name,
     type = 'text',
@@ -22,12 +22,14 @@ const AuthInputText: FC<IAuthInputTextProps> = (
     required,
     value,
     onChange,
-  }) => {
-
+    ...props
+  }: IAuthInputTextProps, ref: Ref<HTMLInputElement>,
+) => {
   const defaultClassName = 'border-none pl-0 text-sm placeholder:text-sm placeholder:italic placeholder:text-slate-400 text-gray-600 focus:border-none focus:outline-none focus:ring-0';
 
   return (
     <input
+      ref={ref}
       value={value}
       type={type}
       id={name}
@@ -36,8 +38,11 @@ const AuthInputText: FC<IAuthInputTextProps> = (
       className={cn(defaultClassName, className)}
       placeholder={placeholder}
       required={required}
+      {...props}
     />
   );
-};
+});
+
+AuthInputText.displayName = 'AuthInputText';
 
 export default AuthInputText;

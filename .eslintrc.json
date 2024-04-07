@@ -2,9 +2,6 @@
   "extends": [
     "next/core-web-vitals"
   ],
-  "plugins": [
-    "@next/eslint-plugin-next"
-  ],
   "rules": {
     "unused-imports/no-unused-imports": "off",
     "no-unused-vars": "off"

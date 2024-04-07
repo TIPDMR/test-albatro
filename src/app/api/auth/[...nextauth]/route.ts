@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth/next';
-import { NextAuthOptions, User } from 'next-auth';
+import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import mainApi from '@shared/api/mainApi';
 import { JWT } from 'next-auth/jwt';

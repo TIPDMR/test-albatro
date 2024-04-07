@@ -29,6 +29,8 @@ const SignInForm = () => {
     handleSubmit,
   } = useForm<IFormInput>({
     defaultValues: {
+      email:  "john@mail.com",
+      password: "changeme",
       remember: true,
     },
     mode: 'all',

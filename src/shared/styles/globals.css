@@ -30,13 +30,19 @@ body {
     /* Для Firefox */
 
     input:-moz-autofill {
+        filter: none;
         background-color: transparent !important;
     }
 
     /* Для браузеров на основе WebKit */
 
     input:-webkit-autofill {
+        filter: none;
         background-color: transparent !important;
+    }
+
+    input {
+        filter: none;
     }
 }
 

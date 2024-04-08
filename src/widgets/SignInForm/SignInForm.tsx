@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -22,6 +22,7 @@ interface IFormInput {
 
 const SignInForm = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const {
     setError,
     register,
@@ -29,14 +30,15 @@ const SignInForm = () => {
     handleSubmit,
   } = useForm<IFormInput>({
     defaultValues: {
-      email:  "john@mail.com",
-      password: "changeme",
+      email: 'john@mail.com',
+      password: 'changeme',
       remember: true,
     },
     mode: 'all',
   });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    setIsLoading(true);
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
@@ -56,6 +58,7 @@ const SignInForm = () => {
         message: `Ошибка сервера`,
       });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -108,7 +111,7 @@ const SignInForm = () => {
         />
         <AuthLabel className="cursor-pointer" htmlFor="remember">Remember me</AuthLabel>
       </AuthFieldset>
-      <AppButton type={'submit'} size="full"> Sign In </AppButton>
+      <AppButton disabled={isLoading} type={'submit'} size="full"> Sign In </AppButton>
     </AuthForm>
   );
 };

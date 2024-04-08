@@ -11,6 +11,7 @@ interface IAppButtonProps {
   border?: 'rounded' | 'border-none';
   bgColor?: 'sky' | 'transparent';
   textColor?: 'white';
+  disabled?: boolean;
 }
 
 /**
@@ -24,6 +25,7 @@ interface IAppButtonProps {
  * @param border - Тип кнопки.
  * @param bgColor - Цвет кнопки.
  * @param textColor - Цвет кнопки.
+ * @param disabled - Активность кнопки.
  */
 const AppButton: React.FC<IAppButtonProps> = (
   {
@@ -35,6 +37,7 @@ const AppButton: React.FC<IAppButtonProps> = (
     border = 'rounded',
     bgColor = 'sky',
     textColor = 'white',
+    disabled = false,
   }) => {
   /**
    * Общий класс для стилизации кнопок.
@@ -90,6 +93,7 @@ const AppButton: React.FC<IAppButtonProps> = (
       )}
       type={type}
       onClick={handlerClick}
+      disabled={disabled}
     >
       {children}
     </button>

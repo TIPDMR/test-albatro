@@ -4,10 +4,11 @@
 
 Key Features:
 - 🔐 Next-auth v4 
-- 🚀 Next.js 14 
+- 🚀 Next.js 14
+- ✨ Tailwind CSS
 - 🔑 Credentials Provider
 - ✅ Feature-Sliced Design
-- 🔍 Axios
+- 💫 Axios
 
 # Install
 First, run the development server:

@@ -35,7 +35,7 @@ class Api {
    * @param accessToken
    * @param refreshToken
    */
-  setJwtToken({accessToken}:{ accessToken: string }) {
+  setJwtToken({ accessToken }: { accessToken: string }) {
     this._jwtAccessToken = accessToken;
   }
 
@@ -72,10 +72,10 @@ class Api {
   /**
    * Регистрация нового пользователя
    */
-  signUp(): Promise<AxiosResponse> {
-    return this._request('/message', {
-      method: 'GET',
-      data: {},
+  signUp({ name, email, password, avatar }: { name: string, email: string, password: string, avatar: string }): Promise<AxiosResponse> {
+    return this._request('/users', {
+      method: 'POST',
+      data: { name, email, password, avatar },
     });
   }
 

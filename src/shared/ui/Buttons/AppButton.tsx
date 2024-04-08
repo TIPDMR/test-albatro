@@ -44,6 +44,7 @@ const AppButton: React.FC<IAppButtonProps> = (
    */
   const generalClass =
     'relative flex items-center justify-center shrink-0 transition-all hover:opacity-70 duration-100 px-5 py-2.5';
+  const disabledClass = disabled && 'opacity-70';
 
   /**
    * Размеры кнопок.
@@ -89,6 +90,7 @@ const AppButton: React.FC<IAppButtonProps> = (
         borderList[border],
         bgColorList[bgColor],
         textColorList[textColor],
+        disabledClass,
         classNameButton,
       )}
       type={type}

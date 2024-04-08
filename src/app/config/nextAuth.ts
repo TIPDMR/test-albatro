@@ -42,10 +42,13 @@ export const nextAuthOptions: NextAuthOptions = {
       }, async authorize(credentials, req) {
         console.log('NextAuth');
         if (!credentials?.email || !credentials.password) return null;
+        //Аунтификация пользователя
         const resSignIn = await mainApi.signIn(credentials);
         if (resSignIn && resSignIn.status === 200 || resSignIn.status === 201) {
           const { access_token, refresh_token }: ISignInResponse = resSignIn.data;
+          //Установка accessToken для работы с защищенными роутами
           mainApi.setJwtToken({ accessToken: access_token });
+          //Получение данных пользователя
           const resUserProfile = await mainApi.getProfile();
           if (resUserProfile && resUserProfile.status === 200 || resUserProfile.status === 201) {
             const { id, name, email, avatar }: IUserProfile = resUserProfile.data;
@@ -76,7 +79,8 @@ export const nextAuthOptions: NextAuthOptions = {
   },
   callbacks: {
     /**
-     * Обратный вызов выполняется всякий раз, когда веб-токен JSON (JWT) создается или обновляется в течение жизненного цикла аутентификации
+     * Обратный вызов выполняется всякий раз, когда веб-токен JSON (JWT)
+     * создается или обновляется в течение жизненного цикла аутентификации
      * @param token - объект токена JWT
      * @param user - объект пользователя
      */
@@ -86,9 +90,10 @@ export const nextAuthOptions: NextAuthOptions = {
       if (user) return { ...token, ...user } as JWT;
       return refreshToken(token);
     },
-    //этот обратный вызов вызывается каждый раз, когда считываются данные сеанса, например, во время рендеринга на стороне сервера или в защищенных запросах API
+
     /**
-     *
+     * этот обратный вызов вызывается каждый раз, когда считываются данные сеанса,
+     * например, во время рендеринга на стороне сервера или в защищенных запросах API
      * @param token - объект токена JWT
      * @param session - объект сессии
      */

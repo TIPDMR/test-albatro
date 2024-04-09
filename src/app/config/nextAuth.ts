@@ -25,7 +25,7 @@ interface IUserProfile {
 const refreshToken = async (token: JWT): Promise<JWT> => {
   const response = await mainApi.refreshToken({ refreshToken: token.backendTokens.refreshToken });
   const { access_token, refresh_token }: ISignInResponse = response.data;
-  console.log('refreshed');
+  mainApi.setJwtToken({ accessToken: access_token });
   return {
     ...token,
     backendTokens: { accessToken: access_token, refreshToken: refresh_token },

@@ -3,32 +3,18 @@ import mainApi from '@shared/api/mainApi';
 import { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-interface ISignInResponse {
-  access_token: string;
-  refresh_token: string;
-}
-
-interface IUserProfile {
-  id: string;
-  email: string;
-  password: string;
-  name: string;
-  role: string;
-  avatar: string;
-}
-
 /**
  * Обновление refresh и access токенов по api
  *
  * @param token
  */
 const refreshToken = async (token: JWT): Promise<JWT> => {
-  const response = await mainApi.refreshToken({ refreshToken: token.backendTokens.refreshToken });
-  const { access_token, refresh_token }: ISignInResponse = response.data;
-  mainApi.setJwtToken({ accessToken: access_token });
+  const response = await mainApi.refreshToken({ refreshToken: token.backendTokens.refresh_token });
+  const { access_token, refresh_token }: ISignInResponse = await response.json();
+  mainApi.setJwtToken({ access_token: access_token });
   return {
     ...token,
-    backendTokens: { accessToken: access_token, refreshToken: refresh_token },
+    backendTokens: { access_token: access_token, refresh_token: refresh_token },
   };
 };
 
@@ -39,34 +25,37 @@ export const nextAuthOptions: NextAuthOptions = {
       credentials: {
         email: {},
         password: {},
-      }, async authorize(credentials, req) {
-        console.log('NextAuth');
+        remember: {},
+      },
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials.password) return null;
         //Аунтификация пользователя
         const resSignIn = await mainApi.signIn(credentials);
-        if (resSignIn && resSignIn.status === 200 || resSignIn.status === 201) {
-          const { access_token, refresh_token }: ISignInResponse = resSignIn.data;
-          //Установка accessToken для работы с защищенными роутами
-          mainApi.setJwtToken({ accessToken: access_token });
-          //Получение данных пользователя
-          const resUserProfile = await mainApi.getProfile();
-          if (resUserProfile && resUserProfile.status === 200 || resUserProfile.status === 201) {
-            const { id, name, email, avatar }: IUserProfile = resUserProfile.data;
-
-            const user: User = {
-              id: id,
-              name: name,
-              email: email,
-              image: avatar,
-              backendTokens: {
-                accessToken: access_token,
-                refreshToken: refresh_token,
-              },
-            };
-            return user;
-          }
+        if (!resSignIn?.ok) {
+          throw new Error(`Sign In failed with status: ${resSignIn.status}`);
         }
-        return null;
+        const { access_token, refresh_token }: ISignInResponse = await resSignIn.json();
+        //Установка access_token для работы с защищенными роутами
+        mainApi.setJwtToken({ access_token: access_token });
+        //Получение данных пользователя
+        const resUserProfile = await mainApi.getProfile();
+        if (!resUserProfile?.ok) {
+          throw new Error(`Getting a profile failed with status: ${resUserProfile.status}`);
+        }
+
+        const { id, email, name, avatar }: IUserProfileResponse = await resUserProfile.json();
+
+        const user: User = {
+          id: id,
+          name: name,
+          email: email,
+          image: avatar,
+          backendTokens: {
+            access_token: access_token,
+            refresh_token: refresh_token,
+          },
+        };
+        return user;
       },
     }),
   ],
@@ -87,8 +76,11 @@ export const nextAuthOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // Если объект пользователя существует (то есть пользователь уже аутентифицирован)
       // Обновляем токен добавляя данные пользователя
+      // Это будет выполнено только при входе в систему. При каждом следующем вызове эта часть будет пропущена.
       if (user) return { ...token, ...user } as JWT;
-      return refreshToken(token);
+
+      //return await refreshToken(token);
+      return token;
     },
 
     /**
@@ -98,6 +90,7 @@ export const nextAuthOptions: NextAuthOptions = {
      * @param session - объект сессии
      */
     async session({ token, session }) {
+
       session.user = token.user;
       session.backendTokens = token.backendTokens;
 

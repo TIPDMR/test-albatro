@@ -1,46 +1,17 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import BaseApi from '@shared/api/BaseApi';
 
 const MAIN_API_URI = process.env.API_URI || 'https://api.escuelajs.co/api/v1';
 
-interface ApiConfig {
-  baseUrl: string;
-  headers: Record<string, string>;
-}
 
-class Api {
-  private instance: AxiosInstance;
-  private _jwtAccessToken: string | null;
+class Api extends BaseApi {
 
-  constructor({ baseUrl, headers }: ApiConfig) {
-    this._jwtAccessToken = null;
-    this.instance = axios.create({
-      baseURL: baseUrl,
-      headers,
-    });
-
-    this.instance.interceptors.response.use(
-      (response: AxiosResponse) => response,
-      (error) => {
-        if (error.response) {
-          return Promise.reject(error.response);
-        } else {
-          return Promise.reject(error);
-        }
-      },
-    );
+  constructor({ serverUrl, headers }: IApiConfig) {
+    super({ serverUrl, headers });
   }
 
-  /**
-   * Установка токенов для последующей работы с ними
-   * @param accessToken
-   * @param refreshToken
-   */
-  setJwtToken({ accessToken }: { accessToken: string }) {
-    this._jwtAccessToken = accessToken;
-  }
 
   /**
-   * Запрос на бекенд севрер для входа пользователя в систему
+   * Запрос на бекенд сервер для входа пользователя в систему
    *
    * @param email
    * @param password
@@ -50,59 +21,74 @@ class Api {
    *   'refresh_token': ''
    * }
    */
-  signIn({ email, password }: { email: string, password: string }): Promise<AxiosResponse> {
-    return this._request('/auth/login', {
-      method: 'POST',
-      data: { email, password },
-    });
+  async signIn({ email, password }: { email: string, password: string }): Promise<Response> {
+    try {
+      return await this._request(`${this._serverUrl}/auth/login`, {
+        method: 'POST',
+        headers: { ...this._headers },
+        body: JSON.stringify({ email, password }),
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
    * Обновление access_token через refresh_token токен
    *
    * @param refreshToken
+   *
+   * @return {
+   *   'access_token': '',
+   *   'refresh_token': ''
+   * }
    */
-  refreshToken({ refreshToken }: { refreshToken: string }): Promise<AxiosResponse> {
-    return this._request('/auth/refresh-token', {
-      method: 'POST',
-      data: { refreshToken },
-    });
+  async refreshToken({ refreshToken }: { refreshToken: string }): Promise<Response> {
+    try {
+      return await this._request(`${this._serverUrl}/auth/refresh-token`, {
+        method: 'POST',
+        headers: { ...this._headers },
+        body: JSON.stringify({ refreshToken }),
+      });
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   /**
    * Регистрация нового пользователя
    */
-  signUp({ name, email, password, avatar }: { name: string, email: string, password: string, avatar: string }): Promise<AxiosResponse> {
-    return this._request('/users', {
-      method: 'POST',
-      data: { name, email, password, avatar },
-    });
-  }
+  // async signUp({ name, email, password, avatar }: { name: string, email: string, password: string, avatar: string }) {
+  //   try {
+  //     return this._request(`${this._serverUrl}/users`, {
+  //       method: 'GET',
+  //       headers: {
+  //         ...this._headers,
+  //         Authorization: `Token ${token}`,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     return Promise.reject(error);
+  //   }
+  // }
 
   /**
    *
    */
-  getProfile(): Promise<AxiosResponse> {
-    return this._request('/auth/profile', {
-      method: 'GET',
-      data: {},
-    });
-  }
-
-
-  private _request(url: string, config: AxiosRequestConfig): Promise<AxiosResponse> {
-    if (this._jwtAccessToken) {
-      if (!config.headers) {
-        config.headers = {};
-      }
-      config.headers['Authorization'] = `Bearer ${this._jwtAccessToken}`;
+  async getProfile(): Promise<Response> {
+    try {
+      return await this._request(`${this._serverUrl}/auth/profile`, {
+        method: 'GET',
+        headers: { ...this._headers },
+      });
+    } catch (error) {
+      return Promise.reject(error);
     }
-    return this.instance.request({ url, ...config });
   }
 }
 
 const MainApi = new Api({
-  baseUrl: MAIN_API_URI,
+  serverUrl: MAIN_API_URI,
   headers: {
     'Content-Type': 'application/json',
   },

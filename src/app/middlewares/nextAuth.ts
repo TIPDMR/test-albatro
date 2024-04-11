@@ -87,6 +87,7 @@ export const middlewareNextAuth: MiddlewareFactory = (next) => {
     }
     // Инициализация ответа по умолчанию
     let response = NextResponse.next();
+
     if (!token) {
       // Перенаправление на страницу входа
       return NextResponse.redirect(new URL(SIGNIN_SUB_URL, request.url));
@@ -107,7 +108,7 @@ export const middlewareNextAuth: MiddlewareFactory = (next) => {
       });
       // Обновляем куку сессии
       response = updateCookie(newSessionToken, request, response);
-      return response;
+
     } catch (error) {
       return updateCookie(null, request, response);
     }

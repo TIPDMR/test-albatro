@@ -109,13 +109,13 @@ export const middlewareNextAuth: MiddlewareFactory = (next) => {
       });
       // Обновляем куку сессии
       response = updateCookie(newSessionToken, request, response);
-
+      // Передаем управление следующему middleware
+      await next(request, _next);
     } catch (error) {
       return updateCookie(null, request, response);
     }
 
-    // Передаем управление следующему middleware
-    await next(request, _next);
+
     // Возвращаем response после выполнения следующего middleware
     return response;
   };

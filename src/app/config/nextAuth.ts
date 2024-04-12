@@ -1,7 +1,8 @@
-import { JWT } from 'next-auth/jwt';
-import mainApi from '@shared/api/mainApi';
 import { NextAuthOptions, User } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import mainApi from '@shared/api/mainApi';
+
 
 /**
  * Обновление refresh и access токенов по api
@@ -78,8 +79,6 @@ export const nextAuthOptions: NextAuthOptions = {
       // Обновляем токен добавляя данные пользователя
       // Это будет выполнено только при входе в систему. При каждом следующем вызове эта часть будет пропущена.
       if (user) return { ...token, ...user } as JWT;
-
-      //return await refreshToken(token);
       return token;
     },
 
@@ -90,7 +89,6 @@ export const nextAuthOptions: NextAuthOptions = {
      * @param session - объект сессии
      */
     async session({ token, session }) {
-
       session.user = token.user;
       session.backendTokens = token.backendTokens;
 

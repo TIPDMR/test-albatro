@@ -47,6 +47,7 @@ export const updateCookie = (
   request: NextRequest,
   response: NextResponse,
 ): NextResponse<unknown> => {
+  console.log('updateCookie');
   if (sessionToken) {
     request.cookies.set(SESSION_COOKIE, sessionToken);
     response = NextResponse.next({
@@ -113,7 +114,9 @@ export const middlewareNextAuth: MiddlewareFactory = (next) => {
       return updateCookie(null, request, response);
     }
 
-    return next(request, _next);
-    //return response;
+    // Передаем управление следующему middleware
+    await next(request, _next);
+    // Возвращаем response после выполнения следующего middleware
+    return response;
   };
 };

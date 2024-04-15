@@ -1,8 +1,8 @@
-import { FC, FormEventHandler, ReactNode } from 'react';
+import { FC, FormEvent, FormEventHandler, ReactNode } from 'react';
 
 interface IAuthFormProps {
   children: ReactNode;
-  onSubmit?: (payload: any) => void;
+  onSubmit?: (payload: FormEvent<HTMLFormElement>) => void;
 }
 
 const AuthForm: FC<IAuthFormProps> = ({ children, onSubmit }) => {
